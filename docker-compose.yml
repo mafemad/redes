@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: banco
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web1:
+    build: ./projeto-node
+    container_name: web1
+    environment:
+      - DATABASE_URL=postgresql://admin:123456@postgres:5432/banco
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+
+  web2:
+    build: ./projeto-node
+    container_name: web2
+    environment:
+      - DATABASE_URL=postgresql://admin:123456@postgres:5432/banco
+    ports:
+      - "3002:3000"
+    depends_on:
+      - postgres
+
+  web3:
+    build: ./projeto-node
+    container_name: web3
+    environment:
+      - DATABASE_URL=postgresql://admin:123456@postgres:5432/banco
+    ports:
+      - "3003:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    driver: bridge
+
